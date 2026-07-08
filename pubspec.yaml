@@ -1,6 +1,6 @@
 name: swiss
 description: "Swiss is an app where user can find a nearby rider, request a service, and complete a basic delivery/transport job, accross Nigeria"
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
 version: 1.0.0+1
 
 environment:
@@ -16,6 +16,7 @@ dependencies:
   lucide_icons_flutter: ^3.1.14+2
   intl: ^0.20.3
   provider: ^6.1.5+1
+  pretty_dio_logger: ^1.4.0
 
 dev_dependencies:
   flutter_test:
