@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../auth/data/repository/auth_repository.dart';
-import '../auth/data/models/user_model.dart';
-import '../../core/storage/token_storage.dart';
+import '../data/repository/auth_repository.dart';
+import '../data/models/user_model.dart';
+import '../../../core/storage/token_storage.dart';
 
 class AuthProvider with ChangeNotifier {
   final AuthRepository _repository;

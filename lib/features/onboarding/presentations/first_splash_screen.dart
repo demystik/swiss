@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../auth_provider.dart';
+import 'package:swiss/features/auth/presentation/login_and_registration_screen.dart';
+import 'package:swiss/features/auth/provider/auth_provider.dart';
 import '../../../core/storage/token_storage.dart';
-import '../../../features/home/presentations/homescreen.dart'; // Change to your actual home
-import 'login_screen.dart'; // Your login screen
+import '../../../features/home/presentations/homescreen.dart'; 
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -44,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
         if (mounted) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => const LoginScreen()),
+            MaterialPageRoute(builder: (_) => const LoginAndRegistrationScreen()),
           );
         }
       }
@@ -53,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          MaterialPageRoute(builder: (_) => const LoginAndRegistrationScreen()),
         );
       }
     }
