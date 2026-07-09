@@ -1,17 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:swiss/core/network/dio_client.dart';
+import 'package:swiss/features/auth/auth_provider.dart';
+import 'package:swiss/features/auth/data/repository/auth_repository.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  //Inititalizing dioClient_____________________
+  final dioClient = DioClient();
+
+  //Initialize repository
+  final authRepository = AuthRepository(dioClient: dioClient);
+
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create:  (_) => AuthProvider(authRepository)),
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
       home: const Home(),
     );
