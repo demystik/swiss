@@ -29,10 +29,10 @@ import 'package:swiss/features/support/presentation/live_chat.dart';
 final appRouter = GoRouter(
   initialLocation: '/login_and_registration_screen',
 
-  redirect: (context, state) {
-    final aboutToLogin = state.matchedLocation == '/login_and_registration_screen';
-    return null;
-  },
+  // redirect: (context, state) {
+  //   final aboutToLogin = state.matchedLocation == '/login_and_registration_screen';
+  //   return null;
+  // },
 
   routes: [
     StatefulShellRoute.indexedStack(
