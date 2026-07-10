@@ -7,8 +7,8 @@ import '../models/user_model.dart';
 class AuthRepository {
   final DioClient dioClient;
   AuthRepository({required this.dioClient});
-
   final TokenStorage _tokenStorage = TokenStorage();
+
 
   //register new user____________________________________________
   Future<Map<String, dynamic>> register({
