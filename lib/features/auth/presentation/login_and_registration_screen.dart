@@ -140,11 +140,7 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                       //Email_________________________________
                       AuthTextfiedLabel(label: 'email'),
                       const SizedBox(height: 8),
-                      AuthTextField(
-                        icon: LucideIcons.mail,
-                        label: "name@example.com",
-                        firstNameCtrl: _loginEmailCtrl,
-                      ),
+                      EmailTextField(emailCtrl: _loginEmailCtrl),
                       //Password_______________________________
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -168,8 +164,13 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                       const SizedBox(height: 8),
                       //Login Password TextField___________________________
                       passwordTextField(
-                        obscure: loginPasswordHidden,
+                        obscurePass: loginPasswordHidden,
                         ctrl: _loginPasswordCtrl,
+                         onToggle: () {
+                          setState(() {
+                            loginPasswordHidden = !loginPasswordHidden;
+                          });
+                        },
                         myValidator: (value) {
                           if (value == null || value.isEmpty) {
                             return "required";
@@ -231,7 +232,12 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                       AuthTextfiedLabel(label: "Password"),
                       passwordTextField(
                         ctrl: _passwordCtrl,
-                        obscure: registerPasswordHidden,
+                        obscurePass: registerPasswordHidden,
+                         onToggle: () {
+                          setState(() {
+                            registerPasswordHidden = !registerPasswordHidden;
+                          });
+                        },
                         myValidator: (v) {
                           if (v == null || v.trim().isEmpty) return "required";
                           if (v.length <= 7) return "Minimum of 8 Characters";
@@ -241,8 +247,13 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                       //Confirm Password_______________________________
                       AuthTextfiedLabel(label: "Confirm Password"),
                       passwordTextField(
-                        obscure: confirmPasswordHidden,
+                        obscurePass: confirmPasswordHidden,
                         ctrl: _confirmPasswordCtrl,
+                        onToggle: () {
+                          setState(() {
+                            confirmPasswordHidden = !confirmPasswordHidden;
+                          });
+                        },
                         myValidator: (v) {
                           if (v == null || v.trim().isEmpty) {
                             return "required";
@@ -278,26 +289,21 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
   }
 
   AppTextField passwordTextField({
-    required bool obscure,
+    required bool obscurePass,
     required TextEditingController ctrl,
-    required myValidator,
+    required VoidCallback onToggle,
+    required String? Function(String?)? myValidator,
   }) {
     return AppTextField(
       prefixIcon: Icon(LucideIcons.lockKeyhole),
       label: '••••••••',
       controller: ctrl,
-      obscureText: obscure,
+      obscureText: obscurePass,
       // hint: '••••••••',
       validator: myValidator,
       suffixIcon: IconButton(
-        onPressed: () {
-          setState(() {
-            registerPasswordHidden = !registerPasswordHidden;
-          });
-        },
-        icon: Icon(
-          registerPasswordHidden ? LucideIcons.eye : LucideIcons.eyeOff,
-        ),
+        onPressed: onToggle,
+        icon: Icon(obscurePass ? LucideIcons.eye : LucideIcons.eyeOff),
       ),
     );
   }
