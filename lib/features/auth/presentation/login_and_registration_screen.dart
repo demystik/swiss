@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:swiss/core/network/dio_client.dart';
 import 'package:swiss/core/router/swiss_router.dart';
-import 'package:swiss/features/auth/data/repository/auth_repository.dart';
+import 'package:swiss/core/theme/app_spacing.dart';
 import 'package:swiss/features/auth/provider/auth_provider.dart';
+import 'package:swiss/features/auth/widgets/auth_textfield.dart';
+import 'package:swiss/features/auth/widgets/email_textfield.dart';
+import 'package:swiss/features/auth/widgets/textfied_label_style.dart';
 import 'package:swiss/shared/widgets/app_button.dart';
 import 'package:swiss/shared/widgets/app_text_field.dart';
 
@@ -20,7 +22,7 @@ class _LoginScreenState extends State<LoginAndRegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Center(child: Text("Welcome"))),
+      appBar: AppBar(centerTitle: true, title: Text("Welcome")),
       body: SafeArea(
         child: Padding(padding: EdgeInsets.all(8.0), child: AuthTabBarView()),
       ),
@@ -64,27 +66,29 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
     super.dispose();
   }
 
-  Future<void>login()async{
+  //Login Logic_______________________________________________
+  Future<void> login() async {
     final provider = context.read<AuthProvider>();
     final bool isLoggedIn = await provider.login(
-      email: _loginEmailCtrl.text.trim(), 
-      password: _loginPasswordCtrl.text.trim());
-     if (isLoggedIn) {
+      email: _loginEmailCtrl.text.trim(),
+      password: _loginPasswordCtrl.text.trim(),
+    );
+    if (isLoggedIn) {
+      _loginEmailCtrl.clear();
+      _loginPasswordCtrl.clear();
       if (!mounted) return;
       context.push(SwissRouter.dashboard);
     } else {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(provider.error ?? "Login Failed"),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(provider.error ?? "Login Failed")));
     }
   }
 
   //Register logic________________________________________
   Future<void> register() async {
-      final provider = context.read<AuthProvider>();
+    final provider = context.read<AuthProvider>();
     final bool isRegistered = await provider.register(
       email: _emailCtrl.text.trim(),
       phone: _phoneNumberCtrl.text.trim(),
@@ -94,14 +98,18 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
       lastName: _lastNameCtrl.text.trim(),
     );
     if (isRegistered) {
+      _firstNameCtrl.clear();
+      _lastNameCtrl.clear();
+      _emailCtrl.clear();
+      _phoneNumberCtrl.clear();
+      _passwordCtrl.clear();
+      _confirmPasswordCtrl.clear();
       if (!mounted) return;
       context.push(SwissRouter.dashboard);
     } else {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(provider.error ?? "Register Failed"),
-        ),
+        SnackBar(content: Text(provider.error ?? "Register Failed")),
       );
     }
   }
@@ -117,9 +125,12 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
           children: [
             slidingToggle(toggleWidth),
 
-            //Login textfield______________________________________
-            ...[
-              if (!isRegisterSelected)
+            SizedBox(height: AppSpacing.md),
+
+            IndexedStack(
+              index: isRegisterSelected ? 1 : 0,
+              children: [
+                //Login Form________________________________
                 Form(
                   key: _loginFormKey,
                   child: Column(
@@ -127,39 +138,18 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                     spacing: 15,
                     children: [
                       //Email_________________________________
-                      const Text(
-                        'Email',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF1A1A1A),
-                        ),
-                      ),
+                      AuthTextfiedLabel(label: 'email'),
                       const SizedBox(height: 8),
-                      AppTextField(
-                        controller: _loginEmailCtrl,
-                        prefixIcon: Icon(LucideIcons.mail),
+                      AuthTextField(
+                        icon: LucideIcons.mail,
                         label: "name@example.com",
-                        hint: "name@example.com",
-                        validator:(value) {
-                          if(value == null || value.isEmpty){
-                            return "required";
-                          } 
-                          return null;
-                        },
+                        firstNameCtrl: _loginEmailCtrl,
                       ),
                       //Password_______________________________
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Password',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF1A1A1A),
-                            ),
-                          ),
+                          AuthTextfiedLabel(label: "Password"),
                           GestureDetector(
                             onTap: () {
                               // Handle forgot password action
@@ -177,26 +167,11 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                       ),
                       const SizedBox(height: 8),
                       //Login Password TextField___________________________
-                      AppTextField(
-                        prefixIcon: Icon(LucideIcons.lockKeyhole),
-                        label: '••••••••',
-                        controller: _loginPasswordCtrl,
-                        obscureText: loginPasswordHidden,
-                        // hint: '••••••••',
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              loginPasswordHidden = !loginPasswordHidden;
-                            });
-                          },
-                          icon: Icon(
-                            loginPasswordHidden
-                                ? LucideIcons.eye
-                                : LucideIcons.eyeOff,
-                          ),
-                        ),
-                        validator: (value) {
-                          if(value == null || value.isEmpty){
+                      passwordTextField(
+                        obscure: loginPasswordHidden,
+                        ctrl: _loginPasswordCtrl,
+                        myValidator: (value) {
+                          if (value == null || value.isEmpty) {
                             return "required";
                           }
                           return null;
@@ -206,20 +181,19 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                       AppButton(
                         buttonIcon: LucideIcons.arrowRight,
                         label: "Login",
-                        onPressed: () {
-                          if(_loginFormKey.currentState!.validate()){
-                            login();
-                          }
-                        },
+                        onPressed: context.watch<AuthProvider>().isLoading
+                            ? null
+                            : () {
+                                if (_loginFormKey.currentState!.validate()) {
+                                  login();
+                                }
+                              },
                       ),
                     ],
                   ),
                 ),
-            ],
 
-            //Register textfield______________________________________
-            ...[
-              if (isRegisterSelected)
+                //Register Form___________________________________________
                 Form(
                   key: _registerFormKey,
                   child: Column(
@@ -227,177 +201,104 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       //First Name_________________________________
-                      const Text(
-                        'First Name',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF1A1A1A),
-                        ),
+                      AuthTextfiedLabel(label: "First Name"),
+                      AuthTextField(
+                        label: "John",
+                        firstNameCtrl: _firstNameCtrl,
                       ),
-                      AppTextField(
-                        controller: _firstNameCtrl,
-                        prefixIcon: Icon(LucideIcons.userRound),
-                        label: "first Name",
-                        validator: (v) {
-                          if(v == null || v.trim().isEmpty){
-                            return "required";
-                          }
-                          return null;
-                        } ,
-                      ),
-                  
                       //Last name_________________________________
-                      const Text(
-                        'Last name',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF1A1A1A),
-                        ),
-                      ),
-                      AppTextField(
-                        controller: _lastNameCtrl,
-                        prefixIcon: Icon(LucideIcons.userRound),
-                        label: "Last Name",
-                        validator: (v) {
-                          if(v == null || v.trim().isEmpty){
-                            return "required";
-                          }
-                          return null;
-                        } ,
-                      ),
-                  
+                      AuthTextfiedLabel(label: "Last Name"),
+                      AuthTextField(label: "doe", firstNameCtrl: _lastNameCtrl),
                       //Phone Number_________________________________
-                      const Text(
-                        'Phone Number',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF1A1A1A),
-                        ),
-                      ),
+                      AuthTextfiedLabel(label: "Phone Number"),
                       AppTextField(
                         controller: _phoneNumberCtrl,
                         prefixIcon: Icon(LucideIcons.phone),
                         label: "'+234 909 000 0000'",
                         validator: (v) {
-                          if(v == null || v.trim().isEmpty){
+                          if (v == null || v.trim().isEmpty) {
                             return "required";
                           }
-                          return null;
-                        } ,
-                      ),
-                  
-                      //Email_________________________________
-                      const Text(
-                        'Email',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF1A1A1A),
-                        ),
-                      ),
-                      AppTextField(
-                        controller: _emailCtrl,
-                        prefixIcon: Icon(LucideIcons.mail),
-                        label: "email@example.com",
-                        validator: (v) {
-                          if(v == null || v.trim().isEmpty){
-                            return "required";
-                          }
-                          return null;
-                        } ,
-                      ),
-                  
-                      //Password_______________________________
-                      const Text(
-                        'Password',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF1A1A1A),
-                        ),
-                      ),
-                      AppTextField(
-                        prefixIcon: Icon(LucideIcons.lockKeyhole),
-                        label: '••••••••',
-                        controller: _passwordCtrl,
-                        obscureText: registerPasswordHidden,
-                        // hint: '••••••••',
-                        validator: (v) {
-                          if(v == null || v.trim().isEmpty) return "required";
-                          if(v.length <= 7) return "Minimum of 8 Characters";
                           return null;
                         },
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              registerPasswordHidden = !registerPasswordHidden;
-                            });
-                          },
-                          icon: Icon(
-                            registerPasswordHidden
-                                ? LucideIcons.eye
-                                : LucideIcons.eyeOff,
-                          ),
-                        ),
+                      ),
+
+                      //Email_________________________________
+                      AuthTextfiedLabel(label: "Email"),
+                      EmailTextField(emailCtrl: _emailCtrl),
+
+                      //Password_______________________________
+                      AuthTextfiedLabel(label: "Password"),
+                      passwordTextField(
+                        ctrl: _passwordCtrl,
+                        obscure: registerPasswordHidden,
+                        myValidator: (v) {
+                          if (v == null || v.trim().isEmpty) return "required";
+                          if (v.length <= 7) return "Minimum of 8 Characters";
+                          return null;
+                        },
                       ),
                       //Confirm Password_______________________________
-                      const Text(
-                        'Confirm Password',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF1A1A1A),
-                        ),
-                      ),
-                      AppTextField(
-                        prefixIcon: Icon(LucideIcons.lockKeyhole),
-                        label: '••••••••',
-                        controller: _confirmPasswordCtrl,
-                        obscureText: confirmPasswordHidden,
-                        // hint: '••••••••',
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              confirmPasswordHidden = !confirmPasswordHidden;
-                            });
-                          },
-                          icon: Icon(
-                            confirmPasswordHidden
-                                ? LucideIcons.eye
-                                : LucideIcons.eyeOff,
-                          ),
-                        ),
-                        validator: (v) {
-                          if(v == null || v.trim().isEmpty){
+                      AuthTextfiedLabel(label: "Confirm Password"),
+                      passwordTextField(
+                        obscure: confirmPasswordHidden,
+                        ctrl: _confirmPasswordCtrl,
+                        myValidator: (v) {
+                          if (v == null || v.trim().isEmpty) {
                             return "required";
                           }
-                          if(v.trim() != _passwordCtrl.text.trim()){
+                          if (v.trim() != _passwordCtrl.text.trim()) {
                             return "Passwords do not match";
                           }
                           return null;
-                        } ,
+                        },
                       ),
-                  
+
                       //Register Button_________________________________
                       AppButton(
                         buttonIcon: LucideIcons.arrowRight,
                         label: "Register",
-                        onPressed: () {
-                          if(_registerFormKey.currentState!.validate()){
-                          register();
-                          }
-                        },
+                        onPressed: context.watch<AuthProvider>().isLoading
+                            ? null
+                            : () {
+                                if (_registerFormKey.currentState!.validate()) {
+                                  register();
+                                }
+                              },
                       ),
                     ],
                   ),
                 ),
-            ],
+              ],
+            ),
           ],
         );
       },
+    );
+  }
+
+  AppTextField passwordTextField({
+    required bool obscure,
+    required TextEditingController ctrl,
+    required myValidator,
+  }) {
+    return AppTextField(
+      prefixIcon: Icon(LucideIcons.lockKeyhole),
+      label: '••••••••',
+      controller: ctrl,
+      obscureText: obscure,
+      // hint: '••••••••',
+      validator: myValidator,
+      suffixIcon: IconButton(
+        onPressed: () {
+          setState(() {
+            registerPasswordHidden = !registerPasswordHidden;
+          });
+        },
+        icon: Icon(
+          registerPasswordHidden ? LucideIcons.eye : LucideIcons.eyeOff,
+        ),
+      ),
     );
   }
 

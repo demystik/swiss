@@ -15,6 +15,7 @@ class AppTextField extends StatelessWidget {
     this.onChanged,
     this.maxLines = 1,
     this.enabled = true,
+    this.autofill,
   });
 
   final String label;
@@ -28,6 +29,7 @@ class AppTextField extends StatelessWidget {
   final void Function(String)? onChanged;
   final int maxLines;
   final bool enabled;
+  final Iterable<String>? autofill;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +37,8 @@ class AppTextField extends StatelessWidget {
     final text = Theme.of(context).textTheme;
 
     return TextFormField(
+
+      autofillHints: autofill,
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
@@ -44,6 +48,7 @@ class AppTextField extends StatelessWidget {
       enabled: enabled,
       style: text.bodyLarge,
       decoration: InputDecoration(
+        
         floatingLabelBehavior: FloatingLabelBehavior.never,
         labelText: label,
         hintText: hint,
