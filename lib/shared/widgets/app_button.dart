@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_design_system/core/config/theme/app_spacing.dart';
+import 'package:swiss/core/theme/app_spacing.dart';
 
 class AppButton extends StatelessWidget {
   const AppButton({

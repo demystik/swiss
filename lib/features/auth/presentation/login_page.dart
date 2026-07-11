@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_design_system/core/common/widgets/app_button.dart';
-
-import '../../../../core/common/widgets/app_card.dart';
-import '../../../../core/common/widgets/app_text_field.dart';
-import '../../../../core/config/theme/app_spacing.dart';
+import '../../../shared/widgets/app_text_field.dart';
+import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_button.dart';
+import 'package:swiss/core/theme/app_spacing.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
