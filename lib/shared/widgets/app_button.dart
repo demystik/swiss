@@ -7,10 +7,12 @@ class AppButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.isLoading = false,
+    this.buttonIcon,
     this.variant = AppButtonVariant.primary,
   });
 
   final String label;
+  final IconData? buttonIcon;
   final VoidCallback? onPressed;
   final bool isLoading;
   final AppButtonVariant variant;
@@ -37,10 +39,17 @@ class AppButton extends StatelessWidget {
                 width: 20,
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
-            : Text(
-                label,
-                style: text.titleMedium?.copyWith(color: colors.onPrimary),
-              ),
+            : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                    label,
+                    style: text.titleMedium?.copyWith(color: colors.onPrimary),
+                  ),
+                  SizedBox(width: AppSpacing.sm),
+                Icon(buttonIcon, color: Colors.white,),
+              ],
+            ),
       ),
     );
   }

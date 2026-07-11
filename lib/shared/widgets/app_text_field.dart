@@ -44,6 +44,7 @@ class AppTextField extends StatelessWidget {
       enabled: enabled,
       style: text.bodyLarge,
       decoration: InputDecoration(
+        floatingLabelBehavior: FloatingLabelBehavior.never,
         labelText: label,
         hintText: hint,
         suffixIcon: suffixIcon,
