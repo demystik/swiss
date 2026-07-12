@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:heroicons/heroicons.dart';
 import 'package:swiss/shared/widgets/app_text_field.dart';
 
 class EmailTextField extends StatelessWidget {
@@ -12,7 +12,7 @@ class EmailTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppTextField(
       controller: _emailCtrl,
-      prefixIcon: Icon(LucideIcons.mail),
+      prefixIcon: HeroIcon(HeroIcons.user, style: HeroIconStyle.solid,),
       label: "email@example.com",
       keyboardType: TextInputType.emailAddress,
       autofill: const [AutofillHints.email],

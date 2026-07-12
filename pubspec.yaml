@@ -17,6 +17,7 @@ dependencies:
   intl: ^0.20.3
   provider: ^6.1.5+1
   pretty_dio_logger: ^1.4.0
+  heroicons: ^0.11.0
 
 dev_dependencies:
   flutter_test:

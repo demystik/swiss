@@ -7,6 +7,7 @@ import 'package:swiss/core/theme/app_spacing.dart';
 import 'package:swiss/features/auth/provider/auth_provider.dart';
 import 'package:swiss/features/auth/widgets/auth_textfield.dart';
 import 'package:swiss/features/auth/widgets/email_textfield.dart';
+import 'package:swiss/features/auth/widgets/phone_number_textfield.dart';
 import 'package:swiss/features/auth/widgets/textfied_label_style.dart';
 import 'package:swiss/shared/widgets/app_button.dart';
 import 'package:swiss/shared/widgets/app_text_field.dart';
@@ -212,28 +213,7 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                       AuthTextField(label: "doe", firstNameCtrl: _lastNameCtrl),
                       //Phone Number_________________________________
                       AuthTextfiedLabel(label: "Phone Number"),
-                      AppTextField(
-                        controller: _phoneNumberCtrl,
-                        prefixIcon: Icon(LucideIcons.phone),
-                        label: "'+234 909 000 0000'",
-                        validator: (v) {
-                          if (v == null || v.trim().isEmpty) {
-                            return "Phone number is required";
-                          }
-
-                          final phone = v.trim();
-
-                          final nigeriaPhoneRegex = RegExp(
-                            r'^(?:\+234|234|0)(7[0-9]|8[0-9]|9[0-9])\d{8}$',
-                          );
-
-                          if (!nigeriaPhoneRegex.hasMatch(phone)) {
-                            return "Enter a valid Nigerian phone number";
-                          }
-
-                          return null;
-                        },
-                      ),
+                      PhoneNumberTextField(phoneNumberCtrl: _phoneNumberCtrl),
 
                       //Email_________________________________
                       AuthTextfiedLabel(label: "Email"),
@@ -419,3 +399,4 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
     );
   }
 }
+
