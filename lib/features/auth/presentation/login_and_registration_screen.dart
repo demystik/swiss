@@ -166,7 +166,7 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                       passwordTextField(
                         obscurePass: loginPasswordHidden,
                         ctrl: _loginPasswordCtrl,
-                         onToggle: () {
+                        onToggle: () {
                           setState(() {
                             loginPasswordHidden = !loginPasswordHidden;
                           });
@@ -218,8 +218,19 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                         label: "'+234 909 000 0000'",
                         validator: (v) {
                           if (v == null || v.trim().isEmpty) {
-                            return "required";
+                            return "Phone number is required";
                           }
+
+                          final phone = v.trim();
+
+                          final nigeriaPhoneRegex = RegExp(
+                            r'^(?:\+234|234|0)(7[0-9]|8[0-9]|9[0-9])\d{8}$',
+                          );
+
+                          if (!nigeriaPhoneRegex.hasMatch(phone)) {
+                            return "Enter a valid Nigerian phone number";
+                          }
+
                           return null;
                         },
                       ),
@@ -233,14 +244,34 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                       passwordTextField(
                         ctrl: _passwordCtrl,
                         obscurePass: registerPasswordHidden,
-                         onToggle: () {
+                        onToggle: () {
                           setState(() {
                             registerPasswordHidden = !registerPasswordHidden;
                           });
                         },
                         myValidator: (v) {
-                          if (v == null || v.trim().isEmpty) return "required";
-                          if (v.length <= 7) return "Minimum of 8 Characters";
+                          if (v == null || v.trim().isEmpty) {
+                            return "Password is required";
+                          }
+
+                          if (v.length < 8) {
+                            return "Password must be at least 8 characters";
+                          }
+
+                          if (!RegExp(r'[A-Za-z]').hasMatch(v)) {
+                            return "Include at least one letter";
+                          }
+
+                          if (!RegExp(r'\d').hasMatch(v)) {
+                            return "Include at least one number";
+                          }
+
+                          if (!RegExp(
+                            r'[!@#$%^&*(),.?":{}|<>_\-+=/\\[\]~`]',
+                          ).hasMatch(v)) {
+                            return "Include at least one special character";
+                          }
+
                           return null;
                         },
                       ),
