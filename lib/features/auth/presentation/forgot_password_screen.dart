@@ -9,6 +9,7 @@ class ForgotPasswordScreen extends StatelessWidget {
       appBar: AppBar(title: Text("Forgot Password Screen")),
       body: SafeArea(child: Column(children: [
         Text("Forgot Password"),
+        Text("Your forgot your password"),
       ])),
     );
   }
