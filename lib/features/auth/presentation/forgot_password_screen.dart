@@ -7,7 +7,9 @@ class ForgotPasswordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Forgot Password Screen")),
-      body: SafeArea(child: Column(children: [])),
+      body: SafeArea(child: Column(children: [
+        Text("Forgot Password"),
+      ])),
     );
   }
 }
