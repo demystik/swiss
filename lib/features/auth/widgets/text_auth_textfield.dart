@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:swiss/shared/widgets/app_text_field.dart';
+import 'package:heroicons/heroicons.dart';
+import 'package:swiss/features/auth/widgets/app_auth_textfield.dart';
 
-class AuthTextField extends StatelessWidget {
-  const AuthTextField({super.key, required this.label, this.icon, required this.firstNameCtrl} );
+class TextTextField extends StatelessWidget {
+  const TextTextField({super.key, required this.label, this.icon, required this.firstNameCtrl} );
 
   final TextEditingController firstNameCtrl;
   final String label;
@@ -11,9 +11,10 @@ class AuthTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppTextField(
+    return AppAuthTextField(
       controller: firstNameCtrl,
-      prefixIcon: Icon(icon ?? LucideIcons.userRound),
+      prefixIcon: HeroIcon(HeroIcons.user,style: HeroIconStyle.solid),
+      textInputAct: TextInputAction.next,
       label: label,
       validator: (v) {
         if (v == null || v.trim().isEmpty) {

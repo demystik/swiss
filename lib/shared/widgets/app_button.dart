@@ -9,6 +9,7 @@ class AppButton extends StatelessWidget {
     this.isLoading = false,
     this.buttonIcon,
     this.variant = AppButtonVariant.primary,
+    this.rad = AppRadius.md,
   });
 
   final String label;
@@ -16,6 +17,7 @@ class AppButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool isLoading;
   final AppButtonVariant variant;
+  final double rad;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class AppButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: colors.primary,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.md),
+            borderRadius: BorderRadius.circular(rad),
           ),
         ),
         child: isLoading

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:swiss/shared/widgets/app_text_field.dart';
+import 'package:heroicons/heroicons.dart';
+import 'package:swiss/features/auth/widgets/app_auth_textfield.dart';
 
 class PhoneNumberTextField extends StatelessWidget {
   const PhoneNumberTextField({
@@ -12,10 +12,11 @@ class PhoneNumberTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppTextField(
+    return AppAuthTextField(
       controller: _phoneNumberCtrl,
-      prefixIcon: Icon(LucideIcons.phone),
-      label: "'+234 909 000 0000'",
+      prefixIcon: HeroIcon(HeroIcons.phone,style: HeroIconStyle.solid),
+      label: "+234 909 000 0000",
+      textInputAct: TextInputAction.next,
       validator: (v) {
         if (v == null || v.trim().isEmpty) {
           return "Phone number is required";
