@@ -48,6 +48,7 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
   bool loginPasswordHidden = true;
   bool registerPasswordHidden = true;
   bool confirmPasswordHidden = true;
+  bool rememberMe = false;
   final _loginFormKey = GlobalKey<FormState>();
   final _registerFormKey = GlobalKey<FormState>();
   final _firstNameCtrl = TextEditingController();
@@ -337,7 +338,21 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                AuthTextfiedLabel(label: "Remember me"),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Checkbox(
+                                      value: rememberMe,
+                                      onChanged: (v) {
+                                        setState(
+                                          () => rememberMe = !rememberMe,
+                                        );
+                                      },
+                                    ),
+                                    AuthTextfiedLabel(label: "Remember me"),
+                                  ],
+                                ),
+
                                 GestureDetector(
                                   onTap: () {
                                     context.push(
@@ -398,6 +413,13 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
       textInputAct: forLogin || forRegisterConfirmPass
           ? TextInputAction.done
           : TextInputAction.next,
+      onFieldSubmitted: forLogin || forRegisterConfirmPass
+          ? (_) {
+              FocusScope.of(context).unfocus();
+            }
+          : (_) {
+              FocusScope.of(context).nextFocus();
+            },
       // hint: '••••••••',
       validator: myValidator,
       suffixIcon: IconButton(

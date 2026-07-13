@@ -17,6 +17,7 @@ class AppAuthTextField extends StatelessWidget {
     this.enabled = true,
     this.autofill,
     this.textInputAct = TextInputAction.next,
+    this.onFieldSubmitted,
   });
 
   final String label;
@@ -32,6 +33,7 @@ class AppAuthTextField extends StatelessWidget {
   final bool enabled;
   final Iterable<String>? autofill;
   final TextInputAction textInputAct;
+  final void Function(String)? onFieldSubmitted;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,7 @@ class AppAuthTextField extends StatelessWidget {
         enabled: enabled,
         style: text.bodyLarge,
         textInputAction: textInputAct,
-        onFieldSubmitted: (_) {
+        onFieldSubmitted: onFieldSubmitted ?? (_) {
           FocusScope.of(context).nextFocus();
         },
         decoration: InputDecoration(
