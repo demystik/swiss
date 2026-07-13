@@ -8,12 +8,16 @@ class AuthProvider with ChangeNotifier {
   UserModel? _currentUser;
   bool _isLoading = false;
   String? _error;
+  AuthStatus _status = AuthStatus.checking;
 
   AuthProvider(this._repository);
 
   UserModel? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  AuthStatus get status => _status;
+
+  bool get isAuthenticated => _status == AuthStatus.authenticated;
 
   Future<bool> register({
     required String email,
@@ -36,6 +40,7 @@ class AuthProvider with ChangeNotifier {
 
       await _repository.saveAuthData(data);
       _currentUser = UserModel.fromJson(data['user']);
+      _status = AuthStatus.authenticated;
       _setLoading(false);
       notifyListeners();
       return true;
@@ -53,6 +58,7 @@ class AuthProvider with ChangeNotifier {
       final data = await _repository.login(email: email, password: password);
       await _repository.saveAuthData(data);
       _currentUser = UserModel.fromJson(data['user']);
+      _status = AuthStatus.authenticated;
       _setLoading(false);
       notifyListeners();
       return true;
@@ -66,12 +72,24 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> loadUser() async {
     try {
+      final token = await TokenStorage().getAccessToken();
+
+      if (token == null) {
+        _status = AuthStatus.unauthenticated;
+
+        notifyListeners();
+
+        return;
+      }
+
       _currentUser = await _repository.getCurrentUser();
+
+      _status = AuthStatus.authenticated;
       notifyListeners();
     } catch (e) {
-      // Token might be expired
       await logout();
     }
+    notifyListeners();
   }
 
   Future<void> logout() async {
@@ -85,3 +103,5 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 }
+
+enum AuthStatus { checking, authenticated, unauthenticated }

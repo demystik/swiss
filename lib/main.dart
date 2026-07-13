@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swiss/core/network/dio_client.dart';
 import 'package:swiss/core/router/swiss_routes.dart';
@@ -11,27 +12,28 @@ void main() async {
   //Inititalizing dioClient_____________________
   final dioClient = DioClient();
 
-  
   //Initialize repository__________________________________
   final authRepository = AuthRepository(dioClient: dioClient);
 
+  final authProvider = AuthProvider(authRepository);
+
   runApp(
-    MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create:  (_) => AuthProvider(authRepository)),
-  ], child: MyApp()));
+    ChangeNotifierProvider.value(
+      value: authProvider,
+      child: MyApp(router: createRouter(authProvider)),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final GoRouter router;
+  const MyApp({super.key, required this.router});
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      routerConfig: appRouter,
+      routerConfig: router,
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
     );
   }
 }
-
-

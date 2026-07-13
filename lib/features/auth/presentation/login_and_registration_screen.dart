@@ -59,6 +59,7 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   final _confirmPasswordCtrl = TextEditingController();
+  
 
   @override
   void dispose() {

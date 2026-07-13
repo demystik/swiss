@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:swiss/features/auth/presentation/forgot_password_screen.dart';
 import 'package:swiss/features/auth/presentation/login_and_registration_screen.dart';
 import 'package:swiss/features/auth/presentation/reset_password_screen.dart';
+import 'package:swiss/features/auth/provider/auth_provider.dart';
 import 'package:swiss/features/delivery/presentation/completed_delivery.dart';
 import 'package:swiss/features/delivery/presentation/delivery_detail.dart';
 import 'package:swiss/features/delivery/presentation/delivery_screen.dart';
@@ -26,58 +27,134 @@ import 'package:swiss/features/profile/presentations/profile_screen.dart';
 import 'package:swiss/features/support/presentation/help_center.dart';
 import 'package:swiss/features/support/presentation/live_chat.dart';
 
-final appRouter = GoRouter(
-  initialLocation: '/login_and_registration_screen',
+GoRouter createRouter(AuthProvider authProvider) {
+  return GoRouter(
+    initialLocation: '/dashboard',
+    refreshListenable: authProvider,
 
-  // redirect: (context, state) {
-  //   final aboutToLogin = state.matchedLocation == '/login_and_registration_screen';
-  //   return null;
-  // },
-
-  routes: [
-    StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) =>
-          Mainshell(navigationShell: navigationShell),
-      branches: [
-        StatefulShellBranch(
-          routes: [
-            GoRoute(path: "/dashboard", builder: (context, state) => Homescreen()),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(path: "/delivery", builder: (context, state) => DeliveryScreen()),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(path: "/profile", builder: (context, state) => UserProfileScreen()),
-          ],
-        ),
-      ],
-    ),
-    GoRoute(path: "/first_splash_screen", builder: (context, state) => SplashScreen(),),
-    GoRoute(path: "/second_splash_screen", builder: (context, state) => SecondSplashScreen(),),
-    GoRoute(path: "/third_splash_screen", builder: (context, state) => ThirdSplashScreen(),),
-    GoRoute(path: "/login_and_registration_screen", builder: (context, state) => LoginAndRegistrationScreen(),),
-    GoRoute(path: "/forgot_password_screen", builder: (context, state) => ForgotPasswordScreen(),),
-    GoRoute(path: "/reset_password_screen", builder: (context, state) => ResetPasswordScreen(),),
-    GoRoute(path: "/rider_profile_screen", builder: (context, state) => RiderProfileScreen(),),
-    GoRoute(path: "/request_service_screen", builder: (context, state) => RequestServiceScreen(),),
-    GoRoute(path: "/view_summary_screen", builder: (context, state) => ViewSummaryScreen(),),
-    GoRoute(path: "/confirm_request_screen", builder: (context, state) => ConfirmRequestScreen(),),
-    GoRoute(path: "/delivery_detail_screen", builder: (context, state) => DeliveryDetailsScreen(),),
-    GoRoute(path: "/delivery_tracking_screen", builder: (context, state) => DeliveryTrackingScreen(),),
-    GoRoute(path: "/view_detail_receipt_screen", builder: (context, state) => ViewDetailReceiptScreen(),),
-    GoRoute(path: "/completed_delivery_screen", builder: (context, state) => CompletedDelivery(),),
-    GoRoute(path: "/rate_rider_screen", builder: (context, state) => RateRiderScreen(),),
-    GoRoute(path: "/acount_details_screen", builder: (context, state) => AccountDetailsScreen(),),
-    GoRoute(path: "/payment_method_screen", builder: (context, state) => PaymentMethods(),),
-    GoRoute(path: "/notification_screen", builder: (context, state) => NotificationScreen(),),
-    GoRoute(path: "/privacy_policy_screen", builder: (context, state) => PrivacyPolicyScreen(),),
-    GoRoute(path: "/terms_of_service_screen", builder: (context, state) => TermsOfService(),),
-    GoRoute(path: "/help_center_screen", builder: (context, state) => HelpCenterScreen(),),
-    GoRoute(path: "/live_chat_screen", builder: (context, state) => LiveChatScreen(),),
-
-  ],
-);
+    // redirect: (context, state) {
+    //   final aboutToLogin = state.matchedLocation == '/login_and_registration_screen';
+    //   return null;
+    // },
+    routes: [
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            Mainshell(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: "/dashboard",
+                builder: (context, state) => Homescreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: "/delivery",
+                builder: (context, state) => DeliveryScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: "/profile",
+                builder: (context, state) => UserProfileScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
+      GoRoute(
+        path: "/first_splash_screen",
+        builder: (context, state) => SplashScreen(),
+      ),
+      GoRoute(
+        path: "/second_splash_screen",
+        builder: (context, state) => SecondSplashScreen(),
+      ),
+      GoRoute(
+        path: "/third_splash_screen",
+        builder: (context, state) => ThirdSplashScreen(),
+      ),
+      GoRoute(
+        path: "/login_and_registration_screen",
+        builder: (context, state) => LoginAndRegistrationScreen(),
+      ),
+      GoRoute(
+        path: "/forgot_password_screen",
+        builder: (context, state) => ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: "/reset_password_screen",
+        builder: (context, state) => ResetPasswordScreen(),
+      ),
+      GoRoute(
+        path: "/rider_profile_screen",
+        builder: (context, state) => RiderProfileScreen(),
+      ),
+      GoRoute(
+        path: "/request_service_screen",
+        builder: (context, state) => RequestServiceScreen(),
+      ),
+      GoRoute(
+        path: "/view_summary_screen",
+        builder: (context, state) => ViewSummaryScreen(),
+      ),
+      GoRoute(
+        path: "/confirm_request_screen",
+        builder: (context, state) => ConfirmRequestScreen(),
+      ),
+      GoRoute(
+        path: "/delivery_detail_screen",
+        builder: (context, state) => DeliveryDetailsScreen(),
+      ),
+      GoRoute(
+        path: "/delivery_tracking_screen",
+        builder: (context, state) => DeliveryTrackingScreen(),
+      ),
+      GoRoute(
+        path: "/view_detail_receipt_screen",
+        builder: (context, state) => ViewDetailReceiptScreen(),
+      ),
+      GoRoute(
+        path: "/completed_delivery_screen",
+        builder: (context, state) => CompletedDelivery(),
+      ),
+      GoRoute(
+        path: "/rate_rider_screen",
+        builder: (context, state) => RateRiderScreen(),
+      ),
+      GoRoute(
+        path: "/acount_details_screen",
+        builder: (context, state) => AccountDetailsScreen(),
+      ),
+      GoRoute(
+        path: "/payment_method_screen",
+        builder: (context, state) => PaymentMethods(),
+      ),
+      GoRoute(
+        path: "/notification_screen",
+        builder: (context, state) => NotificationScreen(),
+      ),
+      GoRoute(
+        path: "/privacy_policy_screen",
+        builder: (context, state) => PrivacyPolicyScreen(),
+      ),
+      GoRoute(
+        path: "/terms_of_service_screen",
+        builder: (context, state) => TermsOfService(),
+      ),
+      GoRoute(
+        path: "/help_center_screen",
+        builder: (context, state) => HelpCenterScreen(),
+      ),
+      GoRoute(
+        path: "/live_chat_screen",
+        builder: (context, state) => LiveChatScreen(),
+      ),
+    ],
+  );
+}
