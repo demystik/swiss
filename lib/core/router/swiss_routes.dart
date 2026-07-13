@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swiss/features/auth/presentation/forgot_password_screen.dart';
 import 'package:swiss/features/auth/presentation/login_and_registration_screen.dart';
 import 'package:swiss/features/auth/presentation/reset_password_screen.dart';
@@ -32,10 +33,25 @@ GoRouter createRouter(AuthProvider authProvider) {
     initialLocation: '/dashboard',
     refreshListenable: authProvider,
 
-    // redirect: (context, state) {
-    //   final aboutToLogin = state.matchedLocation == '/login_and_registration_screen';
-    //   return null;
-    // },
+    redirect: (context, state) {
+      final auth = context.read<AuthProvider>();
+      final isLoggedIn = auth.isAuthenticated;
+      final aboutToLogin =
+          state.matchedLocation == '/login_and_registration_screen';
+
+      if (auth.status == AuthStatus.checking) {
+        return null;
+      }
+
+      if (!isLoggedIn && !aboutToLogin) {
+        return '/login_and_registration_screen';
+      }
+
+      if (isLoggedIn && aboutToLogin) {
+        return "/dashboard";
+      }
+      return null;
+    },
     routes: [
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
