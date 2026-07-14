@@ -8,16 +8,16 @@ class RiderRepository {
   RiderRepository({required this.dioClient});
 
   // https://swiss-logistics.onrender.com/api/v1/riders/?is_active=true&is_verified=true&status=available
-  Future<RiderResponse> getRiders() async {
-    int page = 1;
-    int pageSize = 20;
-    bool? isActive;
-    bool? isVerified;
-    String? search;
-    String? status;
-    String? vehicleType;
-    String? zone;
-
+  Future<RiderResponse> getRiders({
+    int page = 1,
+    int pageSize = 20,
+    bool? isActive,
+    bool? isVerified,
+    String? search,
+    String? status,
+    String? vehicleType,
+    String? zone,
+  }) async {
     final response = await dioClient.dio.get(
       ApiConstants.riders,
       queryParameters: {
@@ -36,5 +36,3 @@ class RiderRepository {
     return response.data;
   }
 }
-
-enum Status { available, busy, offline, onBreak, suspended }

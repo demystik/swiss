@@ -26,11 +26,9 @@ void main() async {
           create: (context) =>
               RidersProvider(RiderRepository(dioClient: DioClient())),
         ),
-        ChangeNotifierProvider.value(
-          value: authProvider,
-          child: MyApp(router: createRouter(authProvider)),
-        ),
+        ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
       ],
+      child: MyApp(router: createRouter(authProvider)),
     ),
   );
 }
