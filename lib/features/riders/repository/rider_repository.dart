@@ -6,12 +6,9 @@ class RiderRepository {
   final DioClient dioClient;
 
   RiderRepository({required this.dioClient});
-  bool isActive = true;
-  bool isVerified = true;
 
   // https://swiss-logistics.onrender.com/api/v1/riders/?is_active=true&is_verified=true&status=available
   Future<RiderResponse> getRiders() async {
-
     int page = 1;
     int pageSize = 20;
     bool? isActive;
@@ -21,18 +18,20 @@ class RiderRepository {
     String? vehicleType;
     String? zone;
 
-
     final response = await dioClient.dio.get(
-      ApiConstants.riders
+      ApiConstants.riders,
       queryParameters: {
-        "page" : page,
-        "page_size" : pageSize,
-        if(isActive != null) "is_active" : isActive,
-        if(isVerified != null) "is_verified" : isVerified,
-        if(search != null && search.isNotEmpty) "search" : search,
-        
+        "page": page,
+        "page_size": pageSize,
+        //Only assign these parameters if they are not null
+        "is_active": ?isActive,
+        "is_verified": ?isVerified,
+        if (search != null && search.isNotEmpty) "search": search,
+        "status": ?status,
+        "vehicle_type": ?vehicleType,
+        "zone": ?zone,
       },
-      );
+    );
 
     return response.data;
   }

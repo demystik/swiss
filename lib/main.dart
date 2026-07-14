@@ -5,6 +5,8 @@ import 'package:swiss/core/network/dio_client.dart';
 import 'package:swiss/core/router/app_router.dart';
 import 'package:swiss/features/auth/provider/auth_provider.dart';
 import 'package:swiss/features/auth/data/repository/auth_repository.dart';
+import 'package:swiss/features/riders/providers/riders_providers.dart';
+import 'package:swiss/features/riders/repository/rider_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,9 +20,17 @@ void main() async {
   final authProvider = AuthProvider(authRepository);
 
   runApp(
-    ChangeNotifierProvider.value(
-      value: authProvider,
-      child: MyApp(router: createRouter(authProvider)),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<RidersProvider>(
+          create: (context) =>
+              RidersProvider(RiderRepository(dioClient: DioClient())),
+        ),
+        ChangeNotifierProvider.value(
+          value: authProvider,
+          child: MyApp(router: createRouter(authProvider)),
+        ),
+      ],
     ),
   );
 }
