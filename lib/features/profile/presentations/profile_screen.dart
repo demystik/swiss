@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:swiss/core/network/dio_client.dart';
-import 'package:swiss/features/auth/data/repository/auth_repository.dart';
+import 'package:provider/provider.dart';
 import 'package:swiss/features/auth/provider/auth_provider.dart';
 
 class UserProfileScreen extends StatelessWidget {
-  UserProfileScreen({super.key});
-      final dioClient = DioClient();
-    AuthRepository get authRepository => AuthRepository(dioClient: dioClient);
+  const UserProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +11,7 @@ class UserProfileScreen extends StatelessWidget {
       appBar: AppBar(title: Text("User profile")),
       body: SafeArea(child: Column(children: [
         ElevatedButton(onPressed: () async{
-          await AuthProvider(authRepository).logout();
+          await context.read<AuthProvider>().logout();
         }, child: Text("Logout"))
       ])),
     );

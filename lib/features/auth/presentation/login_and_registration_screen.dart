@@ -8,6 +8,7 @@ import 'package:swiss/core/theme/app_spacing.dart';
 import 'package:swiss/core/theme/app_text_styles.dart';
 import 'package:swiss/features/auth/provider/auth_provider.dart';
 import 'package:swiss/features/auth/widgets/app_auth_textfield.dart';
+import 'package:swiss/features/auth/widgets/app_error_snackbar.dart';
 import 'package:swiss/features/auth/widgets/text_auth_textfield.dart';
 import 'package:swiss/features/auth/widgets/email_textfield.dart';
 import 'package:swiss/features/auth/widgets/phone_number_textfield.dart';
@@ -25,7 +26,6 @@ class _LoginScreenState extends State<LoginAndRegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text("Welcome")),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(AppSpacing.md),
@@ -88,9 +88,13 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
       context.push(SwissRouter.dashboard);
     } else {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(provider.error ?? "Login Failed")));
+      AppSnackBar.show(
+        context, 
+        message: provider.error ?? "Login Failed",
+        type: SnackBarType.error);
+      // ScaffoldMessenger.of(
+      //   context,
+      // ).showSnackBar(SnackBar(content: Text(provider.error ?? "Login Failed")));
     }
   }
 
@@ -116,8 +120,10 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
       context.push(SwissRouter.dashboard);
     } else {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(provider.error ?? "Register Failed")),
+      AppSnackBar.show(
+        context,
+        message: provider.error ?? "Registration Failed, try again",
+        type: SnackBarType.error,
       );
     }
   }
@@ -356,6 +362,7 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
 
                                 GestureDetector(
                                   onTap: () {
+                                    debugPrint("forgot clicked");
                                     context.push(
                                       SwissRouter.forgotPasswordScreen,
                                     );

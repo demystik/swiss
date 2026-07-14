@@ -95,6 +95,7 @@ class AuthProvider with ChangeNotifier {
   Future<void> logout() async {
     await TokenStorage().clearTokens();
     _currentUser = null;
+    _status = AuthStatus.unauthenticated;
     notifyListeners();
   }
 
