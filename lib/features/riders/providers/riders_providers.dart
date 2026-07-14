@@ -15,6 +15,15 @@ class RidersProvider extends ChangeNotifier {
   final int pageSize = 20;
   RidersProvider(this._repository);
 
+
+
+
+  bool get isEmpty => riders.isEmpty;
+  bool get hasError => error != null;
+  int get totalRiders => riders.length;
+
+
+  
   Future<void> loadRiders() async {
     isLoading = true;
     error = null;
@@ -44,7 +53,7 @@ class RidersProvider extends ChangeNotifier {
   }
 
   Future<void> loadNextPage() async {
-    if(isLoading || hasMore) return;
+    if (isLoading || hasMore) return;
     isLoading = true;
     notifyListeners();
     try {
@@ -81,6 +90,14 @@ class RidersProvider extends ChangeNotifier {
 
   Future<void> filterStatus(String riderStatus) async {
     status = riderStatus;
+    currentPage = 1;
+    await loadRiders();
+  }
+
+  Future<void> clearFilters()async{
+    search = "";
+    vehicleType = null;
+    status = null;
     currentPage = 1;
     await loadRiders();
   }

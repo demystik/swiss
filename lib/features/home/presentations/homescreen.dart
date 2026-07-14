@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:swiss/features/home/presentations/rider_profile_screen.dart';
 import 'package:swiss/features/riders/providers/riders_providers.dart';
 
 class Homescreen extends StatefulWidget {
@@ -15,7 +14,7 @@ class _HomescreenState extends State<Homescreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(context.read<RidersProvider>().loadRiders());
+    Future.microtask(context.read<RidersProvider>().loadRiders);
   }
 
 
