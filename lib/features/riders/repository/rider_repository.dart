@@ -1,5 +1,6 @@
 import 'package:swiss/core/constants/api_constant.dart';
 import 'package:swiss/core/network/dio_client.dart';
+import 'package:swiss/features/riders/rider_response.dart';
 
 class RiderRepository {
   final DioClient dioClient;
@@ -9,8 +10,29 @@ class RiderRepository {
   bool isVerified = true;
 
   // https://swiss-logistics.onrender.com/api/v1/riders/?is_active=true&is_verified=true&status=available
-  Future<Map<String, dynamic>> getRiders() async {
-    response = await dioClient.dio.get(ApiConstants.riders);
+  Future<RiderResponse> getRiders() async {
+
+    int page = 1;
+    int pageSize = 20;
+    bool? isActive;
+    bool? isVerified;
+    String? search;
+    String? status;
+    String? vehicleType;
+    String? zone;
+
+
+    final response = await dioClient.dio.get(
+      ApiConstants.riders
+      queryParameters: {
+        "page" : page,
+        "page_size" : pageSize,
+        if(isActive != null) "is_active" : isActive,
+        if(isVerified != null) "is_verified" : isVerified,
+        if(search != null && search.isNotEmpty) "search" : search,
+        
+      },
+      );
 
     return response.data;
   }

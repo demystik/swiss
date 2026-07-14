@@ -23,13 +23,13 @@ class RiderModel {
 
   factory RiderModel.fromJson(Map<String, dynamic> json) {
     return RiderModel(
-      employeeId: json['employee_id'],
-      fullName: json['full_name'],
-      phone: json['phone'],
-      email: json['email'],
-      vehicleType: json['vehicle_type'],
-      vehicleRegistrationNumber: json['vehicle_registration_number'],
-      currentStatus: json['current_status'],
+      employeeId: json['employee_id'] ?? '',
+      fullName: json['full_name'] ?? '',
+      phone: json['phone'] ?? '',
+      email: json['email'] ?? '',
+      vehicleType: json['vehicle_type'] ?? '',
+      vehicleRegistrationNumber: json['vehicle_registration_number'] ?? '',
+      currentStatus: json['current_status']  ?? '',
       isActive: json['is_active'] ?? false,
       isVerified: json['is_verified'] ?? false,
     );
