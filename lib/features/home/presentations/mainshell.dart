@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:heroicons/heroicons.dart';
 
 class Mainshell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -8,17 +8,43 @@ class Mainshell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: navigationShell, bottomNavigationBar: BottomNavigationBar(
-      currentIndex: navigationShell.currentIndex,
-      onTap: (index){
-        navigationShell.goBranch(index, initialLocation: index == navigationShell.currentIndex);
-      },
-      items: const[
-        BottomNavigationBarItem(
-          
-          icon: Icon(LucideIcons.layoutDashboard), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(LucideIcons.bike), label: "delivery"),
-        BottomNavigationBarItem(icon: Icon(LucideIcons.personStanding), label: "profile"),
-      ]),);
+    return Scaffold(
+      body: navigationShell,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: navigationShell.currentIndex,
+        onTap: (index) {
+          navigationShell.goBranch(
+            index,
+            initialLocation: index == navigationShell.currentIndex,
+          );
+        },
+        items: const [
+          BottomNavigationBarItem(
+            activeIcon: HeroIcon(
+              HeroIcons.home,
+              style: HeroIconStyle.solid,
+            ),
+            icon: HeroIcon(HeroIcons.home, style: HeroIconStyle.outline),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+             activeIcon: HeroIcon(
+              HeroIcons.cube,
+              style: HeroIconStyle.solid,
+            ),
+            icon: HeroIcon(HeroIcons.cube, style: HeroIconStyle.outline),
+            label: "delivery",
+          ),
+          BottomNavigationBarItem(
+            activeIcon: HeroIcon(
+              HeroIcons.userCircle,
+              style: HeroIconStyle.solid,
+            ),
+            icon: HeroIcon(HeroIcons.userCircle, style: HeroIconStyle.outline),
+            label: "profile",
+          ),
+        ],
+      ),
+    );
   }
 }
