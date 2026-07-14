@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swiss/core/network/dio_client.dart';
-import 'package:swiss/core/router/swiss_routes.dart';
+import 'package:swiss/core/router/app_router.dart';
 import 'package:swiss/features/auth/provider/auth_provider.dart';
 import 'package:swiss/features/auth/data/repository/auth_repository.dart';
 

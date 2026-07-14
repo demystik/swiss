@@ -14,7 +14,9 @@ class Mainshell extends StatelessWidget {
         navigationShell.goBranch(index, initialLocation: index == navigationShell.currentIndex);
       },
       items: const[
-        BottomNavigationBarItem(icon: Icon(LucideIcons.layoutDashboard), label: "Home"),
+        BottomNavigationBarItem(
+          
+          icon: Icon(LucideIcons.layoutDashboard), label: "Home"),
         BottomNavigationBarItem(icon: Icon(LucideIcons.bike), label: "delivery"),
         BottomNavigationBarItem(icon: Icon(LucideIcons.personStanding), label: "profile"),
       ]),);

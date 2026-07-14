@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:swiss/core/router/swiss_router.dart';
+import 'package:swiss/core/router/app_routes.dart';
 import 'package:swiss/core/theme/app_spacing.dart';
 import 'package:swiss/core/theme/app_text_styles.dart';
 import 'package:swiss/features/auth/provider/auth_provider.dart';
