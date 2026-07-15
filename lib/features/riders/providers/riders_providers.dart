@@ -53,7 +53,7 @@ class RidersProvider extends ChangeNotifier {
   }
 
   Future<void> loadNextPage() async {
-    if (isLoading || hasMore) return;
+    if (isLoading || !hasMore) return;
     isLoading = true;
     notifyListeners();
     try {

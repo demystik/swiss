@@ -2,10 +2,12 @@
 
 import 'package:swiss/core/constants/api_constant.dart';
 import 'package:swiss/core/network/dio_client.dart';
+import 'package:swiss/core/storage/token_storage.dart';
 import 'package:swiss/features/riders/rider_response.dart';
 
 class RiderRepository {
   final DioClient dioClient;
+  final TokenStorage _tokenStorage = TokenStorage();
 
   RiderRepository({required this.dioClient});
 
@@ -32,7 +34,19 @@ class RiderRepository {
         if(zone != null) "zone": zone,
       },
     );
-
     return RiderResponse.fromJson(response.data);
+  }
+
+  Future<String> refreshAccessToken() async{
+    final refresh = await _tokenStorage.getRefreshToken();
+    final response = await dioClient.dio.post(
+      ApiConstants.refresh,
+      data: {
+        "refresh":refresh,
+      },
+    );
+    final newAccessToken = response.data["access"];
+    await _tokenStorage.saveAccessToken(newAccessToken);
+    return newAccessToken;
   }
 }

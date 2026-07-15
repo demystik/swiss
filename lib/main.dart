@@ -19,12 +19,14 @@ void main() async {
 
   final authProvider = AuthProvider(authRepository);
 
+  await authProvider.loadUser();
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider<RidersProvider>(
           create: (context) =>
-              RidersProvider(RiderRepository(dioClient: DioClient())),
+              RidersProvider(RiderRepository(dioClient: dioClient)),
         ),
         ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
       ],

@@ -84,8 +84,8 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
     if (isLoggedIn) {
       _loginEmailCtrl.clear();
       _loginPasswordCtrl.clear();
-      if (!mounted) return;
-      context.push(SwissRouter.dashboard);
+      // if (!mounted) return;
+      // context.push(SwissRouter.dashboard);
     } else {
       if (!mounted) return;
       AppSnackBar.show(
@@ -116,8 +116,8 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
       _phoneNumberCtrl.clear();
       _passwordCtrl.clear();
       _confirmPasswordCtrl.clear();
-      if (!mounted) return;
-      context.push(SwissRouter.dashboard);
+      // if (!mounted) return;
+      // context.push(SwissRouter.dashboard);
     } else {
       if (!mounted) return;
       AppSnackBar.show(
