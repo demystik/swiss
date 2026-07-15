@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:swiss/core/network/interceptors/auth_interceptor.dart';
+import 'package:swiss/core/storage/token_storage.dart';
 import '../constants/api_constant.dart';
 
 class DioClient {
@@ -14,6 +16,10 @@ class DioClient {
         contentType: 'application/json',
       ),
     );
+
+    final tokenStorage = TokenStorage();
+
+    dio.interceptors.add(AuthInterceptor(tokenStorage));
 
     dio.interceptors.add(
       PrettyDioLogger(

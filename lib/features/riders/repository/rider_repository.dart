@@ -1,3 +1,5 @@
+// ignore_for_file: use_null_aware_elements
+
 import 'package:swiss/core/constants/api_constant.dart';
 import 'package:swiss/core/network/dio_client.dart';
 import 'package:swiss/features/riders/rider_response.dart';
@@ -7,7 +9,6 @@ class RiderRepository {
 
   RiderRepository({required this.dioClient});
 
-  // https://swiss-logistics.onrender.com/api/v1/riders/?is_active=true&is_verified=true&status=available
   Future<RiderResponse> getRiders({
     int page = 1,
     int pageSize = 20,
@@ -23,16 +24,15 @@ class RiderRepository {
       queryParameters: {
         "page": page,
         "page_size": pageSize,
-        //Only assign these parameters if they are not null
-        "is_active": ?isActive,
-        "is_verified": ?isVerified,
+        if(isActive != null) "is_active": isActive,
+        if(isVerified != null) "is_verified": isVerified,
         if (search != null && search.isNotEmpty) "search": search,
-        "status": ?status,
-        "vehicle_type": ?vehicleType,
-        "zone": ?zone,
+        if(status != null) "status": status,
+        if(vehicleType != null) "vehicle_type": vehicleType,
+        if(zone != null) "zone": zone,
       },
     );
 
-    return response.data;
+    return RiderResponse.fromJson(response.data);
   }
 }

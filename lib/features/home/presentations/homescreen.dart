@@ -10,19 +10,27 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-
   @override
   void initState() {
     super.initState();
-    Future.microtask(context.read<RidersProvider>().loadRiders);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<RidersProvider>().loadRiders();
+    });
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Home")),
-      body: SafeArea(child: Column(children: [])),
+      body: SafeArea(
+        child: ListView(
+          children: [
+            Consumer<RidersProvider>(
+              builder: (context, value, child) => Column(children: []),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
