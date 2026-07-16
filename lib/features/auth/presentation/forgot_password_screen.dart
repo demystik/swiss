@@ -30,7 +30,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // leadingWidth: AppSpacing.lg,
         leading: AppBackButton()),
       body: SafeArea(child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
