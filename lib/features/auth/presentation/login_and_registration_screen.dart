@@ -362,7 +362,6 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
 
                                 GestureDetector(
                                   onTap: () {
-                                    debugPrint("forgot clicked");
                                     context.push(
                                       SwissRouter.forgotPasswordScreen,
                                     );

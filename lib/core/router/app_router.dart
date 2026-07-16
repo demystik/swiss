@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:swiss/core/router/app_routes.dart';
 import 'package:swiss/features/auth/presentation/forgot_password_screen.dart';
 import 'package:swiss/features/auth/presentation/login_and_registration_screen.dart';
 import 'package:swiss/features/auth/presentation/reset_password_screen.dart';
@@ -38,16 +39,17 @@ GoRouter createRouter(AuthProvider authProvider) {
       final isLoggedIn = auth.isAuthenticated;
       final aboutToLogin =
           state.matchedLocation == '/login_and_registration_screen';
+      final bool isPublicRoute = publicRoutes.contains(state.matchedLocation);
 
       if (auth.status == AuthStatus.checking) {
         return null;
       }
 
-      if (!isLoggedIn && !aboutToLogin) {
+      if (!isLoggedIn && !aboutToLogin && !isPublicRoute) {
         return '/login_and_registration_screen';
       }
 
-      if (isLoggedIn && aboutToLogin) {
+      if (isLoggedIn && aboutToLogin ) {
         return "/dashboard";
       }
       return null;

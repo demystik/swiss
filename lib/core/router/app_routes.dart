@@ -25,3 +25,12 @@ class SwissRouter {
   static const helpCenterScreen = "/help_center_screen";
   static const liveChatScreen = "/live_chat_screen";
 }
+
+final publicRoutes = [
+  SwissRouter.forgotPasswordScreen,
+  SwissRouter.resetPasswordScreen,
+  SwissRouter.loginAndRegistrationScreen,
+  SwissRouter.splashScreen,
+  SwissRouter.secondSplashScreen,
+  SwissRouter.thirdSplashScreen,
+];
