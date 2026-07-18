@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:swiss/core/network/api_exceptions.dart';
 import '../data/repository/auth_repository.dart';
 import '../data/models/user_model.dart';
 import '../../../core/storage/token_storage.dart';
@@ -45,8 +46,13 @@ class AuthProvider with ChangeNotifier {
       _setLoading(false);
       notifyListeners();
       return true;
-    } catch (e) {
-      _error = e.toString();
+    } on ApiException catch (e) {
+      _error = e.message;
+      _setLoading(false);
+      notifyListeners();
+      return false;
+    } catch (_) {
+      _error = "something went wrong";
       _setLoading(false);
       notifyListeners();
       return false;

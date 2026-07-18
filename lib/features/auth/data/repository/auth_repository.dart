@@ -1,4 +1,7 @@
 // import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
+import 'package:swiss/core/network/dio_exception_handler.dart';
+
 import '../../../../core/constants/api_constant.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/storage/token_storage.dart';
@@ -9,7 +12,6 @@ class AuthRepository {
   AuthRepository({required this.dioClient});
   final TokenStorage _tokenStorage = TokenStorage();
 
-
   //register new user____________________________________________
   Future<Map<String, dynamic>> register({
     required String firstName,
@@ -19,19 +21,23 @@ class AuthRepository {
     required String password,
     required String passwordConfirm,
   }) async {
-    final response = await dioClient.dio.post(
-      ApiConstants.register,
-      data: {
-        "email": email,
-        'phone': phone,
-        'password': password,
-        'password_confirm': passwordConfirm,
-        'first_name': firstName,
-        'last_name': lastName,
-        'user_type': 'customer',
-      },
-    );
-    return response.data;
+    try {
+      final response = await dioClient.dio.post(
+        ApiConstants.register,
+        data: {
+          "email": email,
+          'phone': phone,
+          'password': password,
+          'password_confirm': passwordConfirm,
+          'first_name': firstName,
+          'last_name': lastName,
+          'user_type': 'customer',
+        },
+      );
+      return response.data;
+    } on DioException catch (e) {
+      throw DioExceptionHandler.handle(e);
+    }
   }
 
   //Login__________________________________
@@ -39,11 +45,15 @@ class AuthRepository {
     required String email,
     required String password,
   }) async {
-    final response = await dioClient.dio.post(
-      ApiConstants.login,
-      data: {'email': email, 'password': password},
-    );
-    return response.data;
+    try {
+      final response = await dioClient.dio.post(
+        ApiConstants.login,
+        data: {'email': email, 'password': password},
+      );
+      return response.data;
+    } on DioException catch (e) {
+      throw DioExceptionHandler.handle(e);
+    }
   }
 
   //Get current user______________________________________
