@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../data/repository/auth_repository.dart';
 import '../data/models/user_model.dart';
@@ -63,6 +64,11 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
+      if (e is DioException) {
+        // print("******************************************************");
+        // print(e.response?.statusCode);
+        // print(e.response?.data);
+      }
       _error = e.toString();
       _setLoading(false);
       notifyListeners();
