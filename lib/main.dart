@@ -7,6 +7,8 @@ import 'package:swiss/core/router/app_router.dart';
 import 'package:swiss/features/auth/provider/auth_provider.dart';
 import 'package:swiss/features/auth/data/repository/auth_repository.dart';
 import 'package:swiss/features/auth/widgets/app_loading_overlay.dart';
+import 'package:swiss/features/profile/data/provider/profile_provider.dart';
+import 'package:swiss/features/profile/data/repository/profile_repository.dart';
 import 'package:swiss/features/riders/providers/riders_providers.dart';
 import 'package:swiss/features/riders/repository/rider_repository.dart';
 
@@ -23,6 +25,8 @@ void main() async {
 
   await authProvider.loadUser();
 
+  final profileRepository = ProfileRepository(dioClient: dioClient);
+
   runApp(
     MultiProvider(
       providers: [
@@ -32,6 +36,7 @@ void main() async {
         ),
         ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
         ChangeNotifierProvider(create: (_) => LoadingOverlayProvider(),),
+        ChangeNotifierProvider(create: (_) => ProfileProvider(profileRepository),),
       ],
       child: MyApp(router: createRouter(authProvider)),
     ),

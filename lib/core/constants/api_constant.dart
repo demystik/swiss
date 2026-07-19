@@ -6,5 +6,5 @@ class ApiConstants{
   static const String currentUser = "auth/me/";
   static const String riders = "riders/";
   static const String refresh = "auth/refresh_token/";
-  static const String updateUserProfiel = "auth/update_profile/";
+  static const String updateUserProfile = "auth/update_profile/";
 }

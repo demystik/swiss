@@ -18,6 +18,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     });
   }
 
+// final profileProvider = context.read<ProfileProvider>();
+// final authProvider = context.read<AuthProvider>();
+
+// final success = await profileProvider.updateProfile(
+//   firstName: 'Larry',
+//   lastName: 'Demystik',
+// );
+
+// if (success) {
+//   authProvider.setCurrentUser(profileProvider.updatedUser!);
+// }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

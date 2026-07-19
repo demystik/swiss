@@ -110,6 +110,11 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void setCurrentUser(UserModel user){
+    _currentUser = user;
+    notifyListeners();
+  }
+
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
