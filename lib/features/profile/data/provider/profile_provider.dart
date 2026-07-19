@@ -14,6 +14,7 @@ class ProfileProvider extends ChangeNotifier {
     required String profilePictureUrl,
   }) async {
     try {
+      // ignore: unused_local_variable
       final data = await _profileRepository.updateUserProfile(
         firstName: firstName,
         lastName: lastName,
@@ -21,6 +22,7 @@ class ProfileProvider extends ChangeNotifier {
         email: email,
         profilePictureUrl: profilePictureUrl,
       );
+    // ignore: empty_catches
     } catch (e) {}
   }
 }
