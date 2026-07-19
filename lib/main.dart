@@ -43,12 +43,11 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.router});
   @override
   Widget build(BuildContext context) {
-    return AppLoadingOverlay(
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        routerConfig: router,
-        theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      ),
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      routerConfig: router,
+      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
+      builder: (context, child) => AppLoadingOverlay(child: child!),
     );
   }
 }

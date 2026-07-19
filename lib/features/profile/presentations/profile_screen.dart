@@ -2,18 +2,53 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swiss/features/auth/provider/auth_provider.dart';
 
-class UserProfileScreen extends StatelessWidget {
+class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<UserProfileScreen> createState() => _UserProfileScreenState();
+}
+
+class _UserProfileScreenState extends State<UserProfileScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AuthProvider>().loadUser();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context, ) {
     return Scaffold(
       appBar: AppBar(title: Text("User profile")),
-      body: SafeArea(child: Column(children: [
-        ElevatedButton(onPressed: () async{
-          await context.read<AuthProvider>().logout();
-        }, child: Text("Logout"))
-      ])),
-    );
+      body: SafeArea(
+        child: Consumer<AuthProvider>(
+          builder: (context, provider, child) { 
+            final user = provider.currentUser;
+            return Column(
+              children: [
+                Text('First Name ${user!.firstName}'),
+                Text('Full Name ${user.fullName}'),
+                Text('Phone Number ${user.phone}'),
+                Text('email ${user.email}'),
+                Text('referral code: ${user.referralCode}'),
+                Text('Account Tier ${user.accountTier}'),
+                Text('Date Joined ${user.dateJoined}'),
+                Text('Profile Picture url ${user.profilePictureUrl}'),
+                Text('Profile Picture url ${user.userType}'),
+                ElevatedButton(
+                  onPressed: () async {
+                    await context.read<AuthProvider>().logout();
+                  },
+                  child: Text("Logout"),
+                ),
+              ],
+            );
+  }
+        ),
+        ),
+      );
   }
 }

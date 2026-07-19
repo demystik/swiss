@@ -39,7 +39,6 @@ class AuthProvider with ChangeNotifier {
         firstName: firstName,
         lastName: lastName,
       );
-
       await _repository.saveAuthData(data);
       _currentUser = UserModel.fromJson(data['user']);
       _status = AuthStatus.authenticated;
