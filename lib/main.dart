@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swiss/core/network/dio_client.dart';
+import 'package:swiss/core/provider/loading_overlay_provider.dart';
 import 'package:swiss/core/router/app_router.dart';
 import 'package:swiss/features/auth/provider/auth_provider.dart';
 import 'package:swiss/features/auth/data/repository/auth_repository.dart';
+import 'package:swiss/features/auth/widgets/app_loading_overlay.dart';
 import 'package:swiss/features/riders/providers/riders_providers.dart';
 import 'package:swiss/features/riders/repository/rider_repository.dart';
 
@@ -29,6 +31,7 @@ void main() async {
               RidersProvider(RiderRepository(dioClient: dioClient)),
         ),
         ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
+        ChangeNotifierProvider(create: (_) => LoadingOverlayProvider(),),
       ],
       child: MyApp(router: createRouter(authProvider)),
     ),
@@ -40,10 +43,12 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.router});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      routerConfig: router,
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
+    return AppLoadingOverlay(
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routerConfig: router,
+        theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
+      ),
     );
   }
 }

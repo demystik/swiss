@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:swiss/core/provider/loading_overlay_provider.dart';
 import 'package:swiss/core/router/app_routes.dart';
 import 'package:swiss/core/theme/app_spacing.dart';
 import 'package:swiss/core/theme/app_text_styles.dart';
@@ -77,10 +78,13 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
   //Login Logic_______________________________________________
   Future<void> login() async {
     final provider = context.read<AuthProvider>();
+    final loading = context.read<LoadingOverlayProvider>();
+    loading.show(message: "Signing you in...");
     final bool isLoggedIn = await provider.login(
       email: _loginEmailCtrl.text.trim(),
       password: _loginPasswordCtrl.text.trim(),
     );
+    loading.hide();
     if (isLoggedIn) {
       _loginEmailCtrl.clear();
       _loginPasswordCtrl.clear();
@@ -101,6 +105,8 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
   //Register logic________________________________________
   Future<void> register() async {
     final provider = context.read<AuthProvider>();
+    final loading = context.read<LoadingOverlayProvider>();
+    loading.show(message: "Creating account for you...");
     final bool isRegistered = await provider.register(
       email: _emailCtrl.text.trim(),
       phone: _phoneNumberCtrl.text.trim(),
@@ -109,6 +115,7 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
       firstName: _firstNameCtrl.text.trim(),
       lastName: _lastNameCtrl.text.trim(),
     );
+    loading.hide();
     if (isRegistered) {
       _firstNameCtrl.clear();
       _lastNameCtrl.clear();
