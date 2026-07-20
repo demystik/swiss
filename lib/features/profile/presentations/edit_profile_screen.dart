@@ -24,12 +24,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
   }
 
-  Future<void> SaveUserInfo() async {
+  Future<void> saveUserInfo() async {
     final UserModel? updatedUser = await context.read<ProfileProvider>().updateProfile(firstName: editFirstNameCtrl.text, lastName: editLastNameCtrl.text, phone: editPhoneCtrl.text);
     if(updatedUser != null){
+      if(!mounted) return;
       context.read<AuthProvider>().setCurrentUser(updatedUser);
     }
-    if(context.mounted){
+    if(mounted){
       AppSnackBar.show(context, message: "Profile Updated", type: SnackBarType.success);
     }
   }
@@ -50,7 +51,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             AppTextField(label: editPhoneCtrl.text),
 
             AppButton(label: "Save", onPressed: (){
-              SaveUserInfo();
+              saveUserInfo();
             }),
           ],
         ),

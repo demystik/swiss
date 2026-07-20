@@ -7,4 +7,6 @@ class ApiConstants{
   static const String riders = "riders/";
   static const String refresh = "auth/refresh_token/";
   static const String updateUserProfile = "auth/update_profile/";
+  static const String forgotPassword = "auth/forgot_password/";
+  static const String resetPassword = "auth/reset_password/";
 }

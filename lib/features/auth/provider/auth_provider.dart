@@ -110,7 +110,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setCurrentUser(UserModel user){
+  void setCurrentUser(UserModel user) {
     _currentUser = user;
     notifyListeners();
   }
@@ -118,6 +118,36 @@ class AuthProvider with ChangeNotifier {
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
+  }
+
+  Future<bool> forgotPassword(String? email, String? phone) async {
+    _setLoading(true);
+    try {
+      await _repository.forgotPassword(email, phone);
+      _setLoading(false);
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      _setLoading(false);
+      return false;
+    }
+  }
+
+  Future<bool> resetPassword({
+    required String token,
+    required String newPassword,
+    required String confirmNewPassword,
+  }) async {
+    _setLoading(true);
+    try {
+      await _repository.resetPassword(token: token, newPassword: newPassword, confirmNewPassword: confirmNewPassword);
+      _setLoading(false);
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      _setLoading(false);
+      return false;
+    }
   }
 }
 

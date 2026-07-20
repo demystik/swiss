@@ -1,7 +1,7 @@
-// import 'package:dio/dio.dart';
+// ignore_for_file: use_null_aware_elements
+
 import 'package:dio/dio.dart';
 import 'package:swiss/core/network/dio_exception_handler.dart';
-
 import '../../../../core/constants/api_constant.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/storage/token_storage.dart';
@@ -68,5 +68,35 @@ class AuthRepository {
     final access = data['access'];
     final refresh = data['refresh'];
     await _tokenStorage.saveToken(accessToken: access, refreshToken: refresh);
+  }
+
+  //Forgot Password__________________________________________________
+  Future<void> forgotPassword(String? email, String? phoneNumber) async {
+    try {
+    await dioClient.dio.post(
+      ApiConstants.forgotPassword,
+      data: {
+        if (email != null) 'email': email,
+        if (phoneNumber != null) 'phone': phoneNumber,
+      },
+    );
+    } on DioException catch (e) {
+      DioExceptionHandler.handle(e);
+    }
+  }
+
+  Future<void> resetPassword({
+    required String token,
+    required String newPassword,
+    required String confirmNewPassword,
+  }) async {
+    await dioClient.dio.post(
+      ApiConstants.resetPassword,
+      data: {
+        "token": token,
+        "new_password": newPassword,
+        "confirm_password": confirmNewPassword,
+      },
+    );
   }
 }
