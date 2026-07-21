@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:heroicons/heroicons.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:swiss/core/provider/loading_overlay_provider.dart';
 import 'package:swiss/core/router/app_routes.dart';
 import 'package:swiss/core/theme/app_spacing.dart';
 import 'package:swiss/core/theme/app_text_styles.dart';
+import 'package:swiss/core/validators/confirm_password_validator.dart';
+import 'package:swiss/core/validators/password_validator.dart';
 import 'package:swiss/features/auth/provider/auth_provider.dart';
-import 'package:swiss/features/auth/widgets/app_auth_textfield.dart';
 import 'package:swiss/features/auth/widgets/app_error_snackbar.dart';
+import 'package:swiss/features/auth/widgets/password_textfield.dart';
 import 'package:swiss/features/auth/widgets/text_auth_textfield.dart';
 import 'package:swiss/features/auth/widgets/email_textfield.dart';
 import 'package:swiss/features/auth/widgets/phone_number_textfield.dart';
@@ -221,6 +222,7 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                             //Password_______________________________
                             AuthTextfiedLabel(label: "Password"),
                             passwordTextField(
+                              context: context,
                               ctrl: _passwordCtrl,
                               obscurePass: registerPasswordHidden,
                               registerPass: true,
@@ -230,36 +232,13 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                                       !registerPasswordHidden;
                                 });
                               },
-                              myValidator: (v) {
-                                if (v == null || v.trim().isEmpty) {
-                                  return "Password is required";
-                                }
-
-                                if (v.length < 8) {
-                                  return "Password must be at least 8 characters";
-                                }
-
-                                if (!RegExp(r'[A-Za-z]').hasMatch(v)) {
-                                  return "Include at least one letter";
-                                }
-
-                                if (!RegExp(r'\d').hasMatch(v)) {
-                                  return "Include at least one number";
-                                }
-
-                                if (!RegExp(
-                                  r'[!@#$%^&*(),.?":{}|<>_\-+=/\\[\]~`]',
-                                ).hasMatch(v)) {
-                                  return "Include at least one special character";
-                                }
-
-                                return null;
-                              },
+                              myValidator: (v) => Passwordvalidator.validate(v),
                             ),
                             // const SizedBox(height: AppSpacing.sm),
                             //Confirm Password_______________________________
                             AuthTextfiedLabel(label: "Confirm Password"),
                             passwordTextField(
+                              context: context,
                               obscurePass: confirmPasswordHidden,
                               ctrl: _confirmPasswordCtrl,
                               forRegisterConfirmPass: true,
@@ -269,15 +248,7 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                                       !confirmPasswordHidden;
                                 });
                               },
-                              myValidator: (v) {
-                                if (v == null || v.trim().isEmpty) {
-                                  return "required";
-                                }
-                                if (v.trim() != _passwordCtrl.text.trim()) {
-                                  return "Passwords do not match";
-                                }
-                                return null;
-                              },
+                              myValidator: (v) => ConfirmPasswordvalidator.validate(v, _confirmPasswordCtrl.text.trim(),),
                             ),
                             const SizedBox(height: AppSpacing.sm),
                             //Register Button_________________________________
@@ -333,6 +304,7 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
                             const SizedBox(height: AppSpacing.md),
                             //Login Password TextField___________________________
                             passwordTextField(
+                              context: context,
                               obscurePass: loginPasswordHidden,
                               ctrl: _loginPasswordCtrl,
                               forLogin: true,
@@ -410,38 +382,7 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
     );
   }
 
-  AppAuthTextField passwordTextField({
-    required bool obscurePass,
-    required TextEditingController ctrl,
-    required VoidCallback onToggle,
-    required String? Function(String?)? myValidator,
-    bool forLogin = false,
-    bool registerPass = false,
-    bool forRegisterConfirmPass = false,
-  }) {
-    return AppAuthTextField(
-      prefixIcon: HeroIcon(HeroIcons.lockClosed, style: HeroIconStyle.solid),
-      label: forLogin ? 'Password' : '••••••••',
-      controller: ctrl,
-      obscureText: obscurePass,
-      textInputAct: forLogin || forRegisterConfirmPass
-          ? TextInputAction.done
-          : TextInputAction.next,
-      onFieldSubmitted: forLogin || forRegisterConfirmPass
-          ? (_) {
-              FocusScope.of(context).unfocus();
-            }
-          : (_) {
-              FocusScope.of(context).nextFocus();
-            },
-      // hint: '••••••••',
-      validator: myValidator,
-      suffixIcon: IconButton(
-        onPressed: onToggle,
-        icon: Icon(obscurePass ? LucideIcons.eye : LucideIcons.eyeOff),
-      ),
-    );
-  }
+  
 
   Container slidingToggle(double toggleWidth) {
     return Container(

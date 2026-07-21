@@ -1,4 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:heroicons/heroicons.dart';
+import 'package:provider/provider.dart';
+import 'package:swiss/core/provider/loading_overlay_provider.dart';
+import 'package:swiss/core/router/app_routes.dart';
+import 'package:swiss/core/theme/app_spacing.dart';
+import 'package:swiss/core/theme/app_text_styles.dart';
+import 'package:swiss/core/validators/confirm_password_validator.dart';
+import 'package:swiss/core/validators/password_validator.dart';
+import 'package:swiss/features/auth/provider/auth_provider.dart';
+import 'package:swiss/features/auth/widgets/app_error_snackbar.dart';
+import 'package:swiss/features/auth/widgets/password_textfield.dart';
+import 'package:swiss/shared/widgets/app_button.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -15,7 +28,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   bool _obscureNewPass = true;
   bool _obscureConfirmPass = true;
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -28,29 +40,33 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   Future<void> _resetPassword() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
+    final loading = context.read<LoadingOverlayProvider>();
 
-    // Simulate API call
+    loading.show(message: "reseting your password...");
+    final bool success = await context.read<AuthProvider>().resetPassword(
+      token: _otpController.text.trim(),
+      newPassword: _newPasswordController.text.trim(),
+      confirmNewPassword: _confirmPasswordController.text.trim(),
+    );
+    loading.hide();
+
+    if (!success || !mounted) return;
+    AppSnackBar.show(
+      context,
+      message: "Password reset successful!",
+      type: SnackBarType.success,
+    );
+
     await Future.delayed(const Duration(seconds: 2));
-
-    setState(() => _isLoading = false);
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Password reset successful!"),
-          backgroundColor: Colors.green,
-        ),
-      );
-      // Navigate back to login or home
-      // Navigator.popUntil(context, (route) => route.isFirst);
-    }
+    if (!mounted) return;
+    context.go(SwissRouter.loginAndRegistrationScreen);
   }
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colorTheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      // backgroundColor: Colors.grey[50],
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -65,142 +81,143 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.lock_reset_rounded,
                     size: 80,
-                    color: Color(0xFF1E88E5),
+                    color: colorTheme.primary,
                   ),
                   const SizedBox(height: 24),
                   const Text(
                     "Reset Password",
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+                    style: AppTextStyles.displayMedium,
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   const Text(
                     "Enter the OTP sent to your email and create a new password",
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    style: AppTextStyles.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.lg),
 
-                  // OTP Field
-                  TextFormField(
-                    controller: _otpController,
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 24, letterSpacing: 8),
-                    maxLength: 6,
-                    decoration: InputDecoration(
-                      labelText: "Enter OTP",
-                      hintText: "123456",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      prefixIcon: const Icon(Icons.message_outlined),
+                  // OTP Field____________________________________________
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.06),
+                          blurRadius: 10,
+                          spreadRadius: 0,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter OTP";
-                      }
-                      if (value.length != 6) {
-                        return "OTP must be 6 digits";
-                      }
-                      return null;
-                    },
+                    child: TextFormField(
+                      controller: _otpController,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 24, letterSpacing: 8),
+                      maxLength: 6,
+                      buildCounter:
+                          (
+                            context, {
+                            required currentLength,
+                            required isFocused,
+                            required maxLength,
+                          }) => null,
+                      decoration: InputDecoration(
+                        labelText: "Enter OTP",
+                        hintText: "123456",
+
+                        prefixIcon: HeroIcon(
+                          HeroIcons.chatBubbleLeftEllipsis,
+                          style: HeroIconStyle.solid,
+                        ),
+                        filled: true,
+                        fillColor: colorTheme.onSecondary,
+                        // fillColor: colors.surfaceContainerHighest.withValues(alpha: 0.4),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                          vertical: AppSpacing.md + AppSpacing.xs,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(AppRadius.xl),
+                          borderSide: BorderSide.none,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(AppRadius.xl),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(AppRadius.xl),
+                          borderSide: BorderSide.none,
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(AppRadius.xl),
+                          borderSide: BorderSide(color: colorTheme.error),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(AppRadius.xl),
+                          borderSide: BorderSide.none,
+                        ),
+                        disabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(AppRadius.xl),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please enter OTP";
+                        }
+                        if (!RegExp(r'^\d{6}$').hasMatch(value)) {
+                          return "Enter a valid 6-digit OTP";
+                        }
+                        return null;
+                      },
+                    ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.md),
 
-                  // New Password
-                  TextFormField(
-                    controller: _newPasswordController,
-                    obscureText: _obscureNewPass,
-                    decoration: InputDecoration(
-                      labelText: "New Password",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      suffixIcon: IconButton(
-                        icon: Icon(_obscureNewPass
-                            ? Icons.visibility_off
-                            : Icons.visibility),
-                        onPressed: () {
-                          setState(() => _obscureNewPass = !_obscureNewPass);
-                        },
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter new password";
-                      }
-                      if (value.length < 8) {
-                        return "Password must be at least 8 characters";
-                      }
-                      return null;
+                  passwordTextField(
+                    context: context,
+                    obscurePass: _obscureNewPass,
+                    ctrl: _newPasswordController,
+                    label: "New Password",
+                    onToggle: () {
+                      setState(() => _obscureNewPass = !_obscureNewPass);
                     },
+                    myValidator: (value) => Passwordvalidator.validate(value),
                   ),
                   const SizedBox(height: 20),
 
                   // Confirm Password
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    obscureText: _obscureConfirmPass,
-                    decoration: InputDecoration(
-                      labelText: "Confirm New Password",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      suffixIcon: IconButton(
-                        icon: Icon(_obscureConfirmPass
-                            ? Icons.visibility_off
-                            : Icons.visibility),
-                        onPressed: () {
-                          setState(
-                              () => _obscureConfirmPass = !_obscureConfirmPass);
-                        },
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please confirm password";
-                      }
-                      if (value != _newPasswordController.text) {
-                        return "Passwords do not match";
-                      }
-                      return null;
+                  passwordTextField(
+                    context: context,
+                    obscurePass: _obscureConfirmPass,
+                    ctrl: _confirmPasswordController,
+                    label: "Confirm Password",
+                    onToggle: () {
+                      setState(
+                        () => _obscureConfirmPass = !_obscureConfirmPass,
+                      );
                     },
+                    myValidator: (val) => ConfirmPasswordvalidator.validate(val, _newPasswordController.text.trim()),
                   ),
-                  const SizedBox(height: 40),
 
-                  // Reset Button
-                  ElevatedButton(
-                    onPressed: _isLoading ? null : _resetPassword,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1E88E5),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 2,
+                  const SizedBox(height: AppSpacing.md),
+
+                  // Reset Button___________________
+                  Consumer<LoadingOverlayProvider>(
+                    builder: (context, provider, child) => AppButton(
+                      label: provider.isLoading
+                          ? "Reseting...."
+                          : "Reset Password",
+                      onPressed: provider.isLoading ? null : _resetPassword,
+                      rad: AppRadius.lg,
                     ),
-                    child: _isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                            "Reset Password",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.md),
                 ],
               ),
             ),
