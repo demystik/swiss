@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:swiss/core/provider/loading_overlay_provider.dart';
 import 'package:swiss/core/router/app_routes.dart';
 import 'package:swiss/core/theme/app_spacing.dart';
 import 'package:swiss/core/theme/app_text_styles.dart';
@@ -28,14 +29,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Future<void> sendForgotPasswordRequest() async {
+    final loading = context.read<LoadingOverlayProvider>();
+    loading.show(message: "Logging your forgot password...");
+
     final success = await context.read<AuthProvider>().forgotPassword(
       emailCtrl.text,
       '',
     );
     if (success) {
+      loading.hide();
+      emailCtrl.clear();
       if (!mounted) return;
       context.go(SwissRouter.resetPasswordScreen);
     } else {
+      loading.hide();
       if (!mounted) return;
       AppSnackBar.show(
         context,
@@ -76,9 +83,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 AppButton(
                   label: "Continue",
                   onPressed: () {
+                    // Hide the keyboard
+                    FocusManager.instance.primaryFocus?.unfocus();
                     if (_forgotPasswordFormKey.currentState!.validate()) {
                       sendForgotPasswordRequest();
-                      emailCtrl.clear();
                     }
                   },
                   rad: AppRadius.xl,

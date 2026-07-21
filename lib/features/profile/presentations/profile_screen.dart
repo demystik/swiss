@@ -18,17 +18,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     });
   }
 
-// final profileProvider = context.read<ProfileProvider>();
-// final authProvider = context.read<AuthProvider>();
+  // final profileProvider = context.read<ProfileProvider>();
+  // final authProvider = context.read<AuthProvider>();
 
-// final success = await profileProvider.updateProfile(
-//   firstName: 'Larry',
-//   lastName: 'Demystik',
-// );
+  // final success = await profileProvider.updateProfile(
+  //   firstName: 'Larry',
+  //   lastName: 'Demystik',
+  // );
 
-// if (success) {
-//   authProvider.setCurrentUser(profileProvider.updatedUser!);
-// }
+  // if (success) {
+  //   authProvider.setCurrentUser(profileProvider.updatedUser!);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -38,29 +38,36 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         child: Consumer<AuthProvider>(
           builder: (context, provider, child) {
             final user = provider.currentUser;
+
+            if (provider.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (provider.error != null) {
+              return Center(child: Text(provider.error!));
+            }
+
+            if (user == null) {
+              return const Center(child: Text("No user found"));
+            }
+
             return Column(
               children: [
-                provider.error != null ? Text(provider.error!) :
-                user == null || provider.isLoading
-                    ? CircularProgressIndicator()
-                    : Column(
-                        children: [
-                          Text('First Name ${user.firstName}'),
-                          Text('Full Name ${user.fullName}'),
-                          Text('Phone Number ${user.phone}'),
-                          Text('email ${user.email}'),
-                          Text('referral code: ${user.referralCode}'),
-                          Text('Account Tier ${user.accountTier}'),
-                          Text('Date Joined ${user.dateJoined}'),
-                          Text('Profile Picture url ${user.profilePictureUrl}'),
-                          Text('Profile Picture url ${user.userType}'),
-                        ],
-                      ),
+                Text('First Name ${user.firstName}'),
+                Text('Full Name ${user.fullName}'),
+                Text('Phone Number ${user.phone}'),
+                Text('Email ${user.email}'),
+                Text('Referral Code ${user.referralCode}'),
+                Text('Account Tier ${user.accountTier}'),
+                Text('Date Joined ${user.dateJoined}'),
+                Text('Profile Picture ${user.profilePictureUrl}'),
+                Text('User Type ${user.userType}'),
+
                 ElevatedButton(
                   onPressed: () async {
                     await context.read<AuthProvider>().logout();
                   },
-                  child: Text("Logout"),
+                  child: const Text("Logout"),
                 ),
               ],
             );

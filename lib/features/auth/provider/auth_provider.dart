@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:swiss/core/network/api_exceptions.dart';
 import '../data/repository/auth_repository.dart';
@@ -68,13 +67,13 @@ class AuthProvider with ChangeNotifier {
       _setLoading(false);
       notifyListeners();
       return true;
-    } catch (e) {
-      if (e is DioException) {
-        // print("******************************************************");
-        // print(e.response?.statusCode);
-        // print(e.response?.data);
-      }
-      _error = e.toString();
+    } on ApiException catch (e) {
+      _error = e.message;
+      _setLoading(false);
+      notifyListeners();
+      return false;
+    } catch (_) {
+      _error = "something went wrong";
       _setLoading(false);
       notifyListeners();
       return false;
@@ -82,25 +81,26 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> loadUser() async {
+    _setLoading(true);
+
     try {
       final token = await TokenStorage().getAccessToken();
 
       if (token == null) {
         _status = AuthStatus.unauthenticated;
-
-        notifyListeners();
-
         return;
       }
 
       _currentUser = await _repository.getCurrentUser();
-
       _status = AuthStatus.authenticated;
-      notifyListeners();
+      _error = null;
+    } on ApiException catch (e) {
+      _error = e.message;
     } catch (e) {
-      await logout();
+      _error = e.toString();
+    } finally {
+      _setLoading(false);
     }
-    notifyListeners();
   }
 
   Future<void> logout() async {
@@ -126,9 +126,15 @@ class AuthProvider with ChangeNotifier {
       await _repository.forgotPassword(email, phone);
       _setLoading(false);
       return true;
-    } catch (e) {
-      _error = e.toString();
+    } on ApiException catch (e) {
+      _error = e.message;
       _setLoading(false);
+      notifyListeners();
+      return false;
+    } catch (_) {
+      _error = "something went wrong";
+      _setLoading(false);
+      notifyListeners();
       return false;
     }
   }
@@ -140,12 +146,22 @@ class AuthProvider with ChangeNotifier {
   }) async {
     _setLoading(true);
     try {
-      await _repository.resetPassword(token: token, newPassword: newPassword, confirmNewPassword: confirmNewPassword);
+      await _repository.resetPassword(
+        token: token,
+        newPassword: newPassword,
+        confirmNewPassword: confirmNewPassword,
+      );
       _setLoading(false);
       return true;
-    } catch (e) {
-      _error = e.toString();
+    } on ApiException catch (e) {
+      _error = e.message;
       _setLoading(false);
+      notifyListeners();
+      return false;
+    } catch (_) {
+      _error = "something went wrong";
+      _setLoading(false);
+      notifyListeners();
       return false;
     }
   }

@@ -90,6 +90,7 @@ class AuthRepository {
     required String newPassword,
     required String confirmNewPassword,
   }) async {
+    try {
     await dioClient.dio.post(
       ApiConstants.resetPassword,
       data: {
@@ -98,5 +99,8 @@ class AuthRepository {
         "confirm_password": confirmNewPassword,
       },
     );
+    } on DioException catch (e) {
+    throw DioExceptionHandler.handle(e);
+  }
   }
 }

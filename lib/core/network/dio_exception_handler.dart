@@ -25,7 +25,7 @@ class DioExceptionHandler {
         if (e.error is SocketException) {
           return ApiException("No Internet Connection");
         }
-        return ApiException("Something went wrong");
+        return ApiException("Something went wrong.");
     }
   }
 
@@ -58,20 +58,31 @@ class DioExceptionHandler {
   }
 
   static String _extractMessage(dynamic data) {
+    if (data == null) return "Something went wrong.";
+
+    if (data is String) {
+      return data;
+    }
+
+    if (data is List) {
+      if (data.isEmpty) return "Something went wrong.";
+      return _extractMessage(data.first);
+    }
+
     if (data is Map) {
-      if (data["detail"] != null) {
-        return data["detail"];
+      // Common API keys first
+      for (final key in ['detail', 'message', 'error']) {
+        if (data.containsKey(key)) {
+          return _extractMessage(data[key]);
+        }
       }
 
-      if (data["message"] != null) {
-        return data["message"];
-      }
-
-      if (data["error"] != null) {
-        return data["error"];
+      // Otherwise return the first value regardless of its key
+      if (data.isNotEmpty) {
+        return _extractMessage(data.values.first);
       }
     }
 
-    return "Something went wrong.";
+    return data.toString();
   }
 }

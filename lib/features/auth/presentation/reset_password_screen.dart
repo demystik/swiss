@@ -38,6 +38,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   Future<void> _resetPassword() async {
+    // Hide the keyboard
+    FocusManager.instance.primaryFocus?.unfocus();
     if (!_formKey.currentState!.validate()) return;
 
     final loading = context.read<LoadingOverlayProvider>();
@@ -67,11 +69,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     final ColorScheme colorTheme = Theme.of(context).colorScheme;
     return Scaffold(
       // backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black87),
-      ),
+      // appBar: AppBar(leading: AppBackButton()),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

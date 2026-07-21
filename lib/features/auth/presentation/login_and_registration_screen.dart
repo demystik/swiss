@@ -78,6 +78,8 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
 
   //Login Logic_______________________________________________
   Future<void> login() async {
+    // Hide the keyboard
+    FocusManager.instance.primaryFocus?.unfocus();
     final provider = context.read<AuthProvider>();
     final loading = context.read<LoadingOverlayProvider>();
     loading.show(message: "Signing you in...");
@@ -105,6 +107,8 @@ class _AuthTabBarViewState extends State<AuthTabBarView> {
 
   //Register logic________________________________________
   Future<void> register() async {
+    // Hide the keyboard
+    FocusManager.instance.primaryFocus?.unfocus();
     final provider = context.read<AuthProvider>();
     final loading = context.read<LoadingOverlayProvider>();
     loading.show(message: "Creating account for you...");
